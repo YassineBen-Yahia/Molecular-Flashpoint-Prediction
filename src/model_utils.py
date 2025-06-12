@@ -6,24 +6,24 @@ import numpy as np
 from datetime import datetime
 import os
 
-def load_latest_model(model_type='full'):
-  
-   
+def load_latest_model():
+    """
+    Load the latest trained reduced model.
+    
+    Returns:
+    --------
+    model : sklearn model object
+        The loaded trained reduced model
+    """
     current_dir = os.path.dirname(os.path.abspath(__file__))
     models_dir = os.path.join(os.path.dirname(current_dir), "models")
-    
-    if model_type == 'full':
-        model_path = os.path.join(models_dir, "rf_flashpoint_full_latest.pkl")
-    elif model_type == 'reduced':
-        model_path = os.path.join(models_dir, "rf_flashpoint_reduced_latest.pkl")
-    else:
-        raise ValueError("model_type must be either 'full' or 'reduced'")
+    model_path = os.path.join(models_dir, "rf_flashpoint_reduced_latest.pkl")
     
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found: {model_path}")
     
     model = joblib.load(model_path)
-    print(f"[SUCCESS] Loaded {model_type} model from {model_path}")
+    print(f"[SUCCESS] Loaded reduced model from {model_path}")
     return model
 
 def load_feature_info():
@@ -40,14 +40,27 @@ def load_feature_info():
     print(f"[SUCCESS] Loaded feature information from {feature_info_path}")
     return feature_info
 
-def predict_flashpoint(model, X_new, model_type='full'):
-   
+def predict_flashpoint(model, X_new):
+    """
+    Make flashpoint predictions using the trained reduced model.
     
+    Parameters:
+    -----------
+    model : sklearn model object
+        The trained model
+    X_new : pd.DataFrame
+        New data to make predictions on
+        
+    Returns:
+    --------
+    predictions : np.array
+        Predicted flashpoint values
+    """
     feature_info = load_feature_info()
     top_features = feature_info['top_features']
     X_new = X_new[top_features]
     predictions = model.predict(X_new)
-    print(f"[SUCCESS] Made predictions for {len(X_new)} samples")
+    print(f"[SUCCESS] Made predictions for {len(X_new)} samples using top {len(top_features)} features")
     return predictions
 
 def list_saved_models():
@@ -74,29 +87,25 @@ def list_saved_models():
             print()
 
 def model_summary():
-   
+    """
+    Display a summary of the latest model performance.
+    """
     try:
         feature_info = load_feature_info()
         
         print("[INFO] Model Performance Summary")
         print("=" * 40)
         
-        full_perf = feature_info['model_performance']['full_model']
         reduced_perf = feature_info['model_performance']['reduced_model']
         
-        print(f"Full Model:")
-        print(f"  R2 Score: {full_perf['R2']:.4f}")
-        print(f"  RMSE: {full_perf['RMSE']:.4f}")
-        print(f"  MAE: {full_perf['MAE']:.4f}")
-        
-        print(f"\nReduced Model:")
+        print(f"Reduced Model Performance:")
         print(f"  R2 Score: {reduced_perf['R2']:.4f}")
         print(f"  RMSE: {reduced_perf['RMSE']:.4f}")
         print(f"  MAE: {reduced_perf['MAE']:.4f}")
         
         print(f"\n[STATS] Features:")
-        print(f"  Total features: {len(feature_info['all_features'])}")
-        print(f"  Top features used: {len(feature_info['top_features'])}")
+        print(f"  Total features available: {len(feature_info['all_features'])}")
+        print(f"  Features used in model: {len(feature_info['top_features'])}")
         print(f"  Feature reduction: {(1 - len(feature_info['top_features'])/len(feature_info['all_features']))*100:.1f}%")
         
         print(f"\n[TIME] Model created: {feature_info['timestamp']}")

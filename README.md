@@ -55,9 +55,11 @@ The dataset contains **14,696 molecular compounds** with the following features:
 
 ### 3. Feature Selection Strategy
 
-- **Built-in Random Forest Importance**: Based on mean decrease in impurity
-- **Permutation Importance**: Measures actual impact on model performance
-- **Threshold-based Selection**: Remove features with minimal predictive power
+- **Initial Training**: Train Random Forest with all 15 engineered features
+- **Feature Importance Analysis**: Rank features using Random Forest's built-in importance
+- **Top Feature Selection**: Select top 10 most important features (33% reduction)
+- **Model Optimization**: Retrain model using only selected features
+- **Performance Validation**: Ensure minimal performance loss with reduced feature set
 
 ## 📁 Project Structure
 
@@ -76,7 +78,6 @@ supervised-learning-project/
 │       └── feature_importance.csv # Feature importance rankings
 │
 ├── 📂 models/
-│   ├── rf_flashpoint_full_latest.pkl    # Latest full model
 │   ├── rf_flashpoint_reduced_latest.pkl # Latest reduced model
 │   ├── feature_info_latest.pkl          # Feature information
 │   └── [timestamped model versions]     # Historical model versions
@@ -102,7 +103,7 @@ supervised-learning-project/
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/YassineBen-Yahia/Molecular-Flashpoint-Prediction
    cd "supervised learning project"
    ```
 
@@ -134,15 +135,16 @@ supervised-learning-project/
    - Encode categorical variables
    - Generate train/test splits
 
-2. **Model Training And Feature Importance Analysis** (`src/train_model.ipynb`)
-   - Train Random Forest model
+2. **Model Training And Feature Selection** (`src/train_model.ipynb`)
+   - Train Random Forest model with all features
    - Perform feature importance analysis
+   - Select top 10 most important features
+   - Train optimized reduced model
    - Evaluate model performance
-   - Compare full vs. reduced models
-   - Save trained models to `models/` directory
+   - Save reduced model to `models/` directory
 
 3. **Using Saved Models** (`src/model_utils.py` & `src/predict_demo.py`)
-   - Load pre-trained models for predictions
+   - Load pre-trained reduced model for predictions
    - Demo script showing prediction examples
    - Utilities for model management
 
@@ -153,19 +155,19 @@ supervised-learning-project/
 ```python
 from src.model_utils import load_latest_model, predict_flashpoint
 
-# Load the trained model
-model = load_latest_model('full')  # or 'reduced'
+# Load the trained reduced model
+model = load_latest_model()
 
 # Make predictions on new data
-predictions = predict_flashpoint(model, new_data, 'full')
+predictions = predict_flashpoint(model, new_data)
 ```
 
 ### Model Versions
 
-The project saves multiple versions of models:
-- **Latest versions**: `*_latest.pkl` for easy loading
-- **Timestamped versions**: `*_YYYYMMDD_HHMMSS.pkl` for version control
-- **Feature information**: Complete metadata about features and performance
+The project saves multiple versions of the reduced model:
+- **Latest version**: `rf_flashpoint_reduced_latest.pkl` for easy loading
+- **Timestamped versions**: `rf_flashpoint_reduced_YYYYMMDD_HHMMSS.pkl` for version control
+- **Feature information**: Complete metadata about selected features and performance
 
 ### Prediction Demo
 
