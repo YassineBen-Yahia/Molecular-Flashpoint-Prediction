@@ -1,11 +1,7 @@
 # 🔬 Molecular Flashpoint Prediction using Machine Learning
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://python.org)
-[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6.0-orange.svg)](https://scikit-learn.org)
-[![RDKit](https://img.shields.io/badge/RDKit-2025.3.2-green.svg)](https://rdkit.org)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A comprehensive machine learning project that predicts molecular flashpoint values using chemical structure data (SMILES strings) and various molecular descriptors. This project demonstrates advanced feature engineering techniques for cheminformatics and implements robust machine learning pipelines for molecular property prediction.
+A comprehensive machine learning project that predicts molecular flashpoint values using chemical structure data (SMILES strings) and various molecular descriptors. This project demonstrates feature engineering techniques for cheminformatics and implements machine learning pipelines for molecular property prediction.
 
 ## 🎯 Project Overview
 
@@ -13,7 +9,7 @@ Flashpoint is a critical safety parameter in chemistry and chemical engineering,
 
 ### 🌟 Key Features
 
-- **Advanced Chemical Feature Engineering**: Convert SMILES strings to molecular descriptors using RDKit
+- ***Chemical Feature Engineering**: Convert SMILES strings to molecular descriptors using RDKit
 - **Comprehensive Data Processing**: Handle categorical variables, binary features, and molecular fingerprints
 - **Feature Importance Analysis**: Identify the most predictive molecular properties
 - **Model Performance Evaluation**: Detailed analysis with multiple metrics and visualizations
@@ -29,12 +25,8 @@ The dataset contains **14,696 molecular compounds** with the following features:
 - **Data Sources**: Multiple chemical databases (19 different sources)
 - **Data Types**: Training, test, and validation splits
 
-### Sample Data Structure
-```
-compound                    | flashpoint | smiles      | is_acid | source
-1-aminopropan-2-ol         | 350.15     | CC(CN)O     | 0       | pubchem
-1-chloro-2,4-dinitrobenzene| 467.15     | C1=CC(=C... | 0       | pubchem
-```
+
+
 
 ## 🔬 Methodology
 
@@ -83,9 +75,17 @@ supervised-learning-project/
 │       ├── y_test.csv            # Test targets
 │       └── feature_importance.csv # Feature importance rankings
 │
+├── 📂 models/
+│   ├── rf_flashpoint_full_latest.pkl    # Latest full model
+│   ├── rf_flashpoint_reduced_latest.pkl # Latest reduced model
+│   ├── feature_info_latest.pkl          # Feature information
+│   └── [timestamped model versions]     # Historical model versions
+│
 ├── 📂 src/
 │   ├── data_preprocessing.ipynb  # Data cleaning & feature engineering
-│   └── train_model.ipynb         # Model training & evaluation
+│   ├── train_model.ipynb         # Model training & evaluation
+│   ├── model_utils.py           # Model loading utilities
+│   └── predict_demo.py          # Prediction examples
 │
 ├── requirements.txt              # Python dependencies
 └── README.md                     # Project documentation
@@ -134,11 +134,46 @@ supervised-learning-project/
    - Encode categorical variables
    - Generate train/test splits
 
-2. **Model Training** (`src/train_model.ipynb`)
+2. **Model Training And Feature Importance Analysis** (`src/train_model.ipynb`)
    - Train Random Forest model
    - Perform feature importance analysis
    - Evaluate model performance
    - Compare full vs. reduced models
+   - Save trained models to `models/` directory
+
+3. **Using Saved Models** (`src/model_utils.py` & `src/predict_demo.py`)
+   - Load pre-trained models for predictions
+   - Demo script showing prediction examples
+   - Utilities for model management
+
+## 🔮 Using the Trained Model
+
+### Loading Saved Models
+
+```python
+from src.model_utils import load_latest_model, predict_flashpoint
+
+# Load the trained model
+model = load_latest_model('full')  # or 'reduced'
+
+# Make predictions on new data
+predictions = predict_flashpoint(model, new_data, 'full')
+```
+
+### Model Versions
+
+The project saves multiple versions of models:
+- **Latest versions**: `*_latest.pkl` for easy loading
+- **Timestamped versions**: `*_YYYYMMDD_HHMMSS.pkl` for version control
+- **Feature information**: Complete metadata about features and performance
+
+### Prediction Demo
+
+Run the demo script to see the model in action:
+```bash
+cd src
+python predict_demo.py
+```
 
 ## 📈 Results
 
@@ -187,39 +222,5 @@ RandomForestRegressor(
 )
 ```
 
-## 📝 Future Improvements
 
-- [ ] **Advanced Models**: Implement XGBoost, Neural Networks
-- [ ] **Hyperparameter Tuning**: Grid search optimization
-- [ ] **Feature Engineering**: Additional molecular descriptors
-- [ ] **Cross-Validation**: K-fold validation strategy
-- [ ] **Ensemble Methods**: Combine multiple algorithms
-- [ ] **Web Interface**: Deploy model as web application
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **RDKit Community** for excellent cheminformatics tools
-- **Scikit-learn** for robust machine learning algorithms
-- **Chemical Database Contributors** for providing high-quality datasets
-
-## 📬 Contact
-
-For questions or collaboration opportunities, please reach out!
-
----
-
-⭐ **Star this repository if you found it helpful!** ⭐

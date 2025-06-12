@@ -27,13 +27,7 @@ def load_latest_model(model_type='full'):
     return model
 
 def load_feature_info():
-    """
-    Load feature information including importance rankings and model performance.
-    
-    Returns:
-    --------
-    dict : Feature information dictionary
-    """
+  
     # Get the absolute path to the models directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
     models_dir = os.path.join(os.path.dirname(current_dir), "models")
@@ -47,23 +41,7 @@ def load_feature_info():
     return feature_info
 
 def predict_flashpoint(model, X_new, model_type='full'):
-    """
-    Make flashpoint predictions using the trained model.
-    
-    Parameters:
-    -----------
-    model : sklearn model object
-        The trained model
-    X_new : pd.DataFrame
-        New data to make predictions on
-    model_type : str
-        Either 'full' or 'reduced' to specify feature selection
-        
-    Returns:
-    --------
-    predictions : np.array
-        Predicted flashpoint values
-    """
+   
     
     feature_info = load_feature_info()
     top_features = feature_info['top_features']
@@ -127,12 +105,10 @@ def model_summary():
         print(f"[ERROR] Error loading model summary: {e}")
 
 if __name__ == "__main__":
-    # Example usage
+   
     print("[INFO] Flashpoint Prediction Model Utilities")
     print("=" * 50)
     
-    # List all saved models
     list_saved_models()
-    
-    # Show model summary
+
     model_summary()
